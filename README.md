@@ -26,7 +26,7 @@ git clone https://github.com/agonych/gamecat
 Navigate to the project directory and run the game with:
 
 ```bash
-python game.py
+python cat.py
 ```
 
 ## Contribution
