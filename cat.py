@@ -47,12 +47,22 @@ Prompts the user for the correct object and the difference between the correct o
 @return: The correct object and the new question based on the difference
 """
 def learn_new_object(node_question):
-    # Prompt the user for the correct object and the difference
+    # Prompt the user for the correct object
     new_object = input("I give up. What is it? ").strip().lower()
-    # Collect the difference between the correct object and the current object
-    difference = input(f"How does {new_object} differ from {node_question}? ").strip().lower() # Save in lowercase
-    # Create a new question based on the difference
-    new_question = f"Is it {difference}?"
+    # Guide the user to provide a characteristic that fits into a question
+    print(f"Tell me something that distinguishes {new_object} from {node_question}.")
+    print("For example, 'can fly', 'has feathers', or 'is bigger than a car'.")
+    difference = input("It ... ").strip().lower()
+    # Determine the appropriate question format based on the input
+    if difference.startswith("is "): # If the difference starts with "is", use a "Is it" question
+        new_question = "Is it " + difference + "?"
+    elif difference.startswith("can "): # If the difference starts with "can", use a "Can it" question
+        new_question = "Can it " + difference[4:] + "?"
+    elif difference.startswith("has "): # If the difference starts with "has", use a "Does it have" question
+        new_question = "Does it have " + difference[4:] + "?"
+    else:
+        # For inputs that don't fit the above patterns, use a generic "Does it" question
+        new_question = "Does it " + difference + "?"
     # Return the correct object and the new question
     return new_object, new_question
 
@@ -68,7 +78,7 @@ def ask_question(node, parent=None):
     # Check if the node is a question node
     if node.question.endswith('?'):
         # Ask the question and get the user's input
-        answer = input(node.question + " (yes/no): ").strip().lower()
+        answer = input(node.question + " (Y/N): ").strip().lower()
         # Check only the first letter for simplicity
         if answer.startswith('y'):
             # If the answer is yes, navigate to the yes branch
@@ -94,7 +104,7 @@ def ask_question(node, parent=None):
                 return ask_question(node.no, node)
     else:
         # If the node is not a question node, prompt the user for the correct object
-        answer = input(f"Is it {node.question}? (yes/no): ").strip().lower()  # Handle input in lowercase
+        answer = input(f"Is it {node.question}? (Y/N): ").strip().lower()  # Handle input in lowercase
         # Check only the first letter for simplicity
         if answer.startswith('y'): # If the answer is yes, the object has been guessed correctly
             print("I guessed right!")
@@ -152,7 +162,7 @@ def load_tree(directory="data", filename='tree.pkl'):
             return pickle.load(file)
     except (FileNotFoundError, EOFError, pickle.UnpicklingError):
         # If the file doesn't exist, or an error occurs, return a new tree with "cat" as the root node.
-        return TreeNode("cat")
+        return TreeNode("a cat")
 
 
 # Starting node of the tree
@@ -177,6 +187,6 @@ while True:
     # Save the tree after each game
     save_tree(root)
     # Ask the user if they want to play again
-    if not input("Do you want to play again? (yes/no): ").strip().lower().startswith('y'):
+    if not input("Do you want to play again? (Y/N): ").strip().lower().startswith('y'):
         # If the user does not want to play again, break the loop
         break
