@@ -1,3 +1,6 @@
+import os
+import pickle
+
 """
 A decision-tree based learning game that iteratively guesses objects by asking yes/no questions, adapting to new knowledge from user input
 """
@@ -52,6 +55,7 @@ def learn_new_object(node_question):
     new_question = f"Is it {difference}?"
     # Return the correct object and the new question
     return new_object, new_question
+
 
 """
 Asks a question at the current node and recursively navigates the tree based on the user's input
@@ -113,8 +117,46 @@ def ask_question(node, parent=None):
                 return new_node
         return None
 
+
+"""
+Save the decision tree to a file within the data directory.
+@param root_node: The root node of the decision tree
+@param directory: The directory to save the tree to (default is 'data')
+@param filename: The name of the file to save the tree to (default is 'tree.pkl')
+@return: None
+"""
+def save_tree(root_node, directory="data", filename='tree.pkl'):
+    # Check if the directory exists, create it if it doesn't
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    # Construct the file path to save the tree
+    filepath = os.path.join(directory, filename)
+    # Save the tree to the file
+    with open(filepath, 'wb') as file:
+        pickle.dump(root_node, file)
+
+
+"""
+Load the decision tree from a file or create a new one if the file doesn't exist or an error occurs.
+@param directory: The directory to load the tree from (default is 'data')
+@param filename: The name of the file to load the tree from (default is 'tree.pkl')
+@return: The loaded tree or a new tree with "cat" as the root node
+"""
+def load_tree(directory="data", filename='tree.pkl'):
+    # Construct the file path to load the tree
+    filepath = os.path.join(directory, filename)
+    try:
+        # Load the tree from the file
+        with open(filepath, 'rb') as file:
+            # Return the loaded tree
+            return pickle.load(file)
+    except (FileNotFoundError, EOFError, pickle.UnpicklingError):
+        # If the file doesn't exist, or an error occurs, return a new tree with "cat" as the root node.
+        return TreeNode("cat")
+
+
 # Starting node of the tree
-root = TreeNode("cat")
+root = load_tree()
 
 """
 Plays the game by asking questions and navigating the decision tree based on user input (infinitely until the user decides to stop)
@@ -132,6 +174,8 @@ def play_game(root):
 while True:
     # Play the game with the current root node
     root = play_game(root)
+    # Save the tree after each game
+    save_tree(root)
     # Ask the user if they want to play again
     if not input("Do you want to play again? (yes/no): ").strip().lower().startswith('y'):
         # If the user does not want to play again, break the loop
