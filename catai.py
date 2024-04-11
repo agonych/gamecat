@@ -6,12 +6,15 @@ from dotenv import load_dotenv
 # Load the environment variables from .env file
 load_dotenv()
 
-client = OpenAI(
-    api_key=os.getenv('GPT_API_KEY')
-)
+# Create an OpenAI client with the API key
+client = OpenAI(api_key=os.getenv('GPT_API_KEY'))
 
 
 def ask_gpt_to_think_of_object():
+    """
+    # Ask GPT-3 to think of an object and describe it.
+    :returns: The description of the object thought of by GPT-3.
+    """
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -24,10 +27,17 @@ def ask_gpt_to_think_of_object():
 
 
 def ask_yes_no_question_about_object(object_description, question):
+    """
+    # Ask GPT-3 a yes/no question about an object.
+    :param object_description: The description of the object.
+    :param question: The yes/no question to ask about the object.
+    :returns: The answer to the yes/no question.
+    """
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": f"You are a helpful assistant who knows about the object: {object_description}."},
+            {"role": "system",
+             "content": f"You are a helpful assistant who knows about the object: {object_description}."},
             {"role": "user", "content": question}
         ]
     )
@@ -36,6 +46,12 @@ def ask_yes_no_question_about_object(object_description, question):
 
 
 def confirm_guess_with_gpt(object_description, guess):
+    """
+    # Confirm a guess with GPT-3.
+    :param object_description: description of the object
+    :param guess: the guess to confirm
+    :return: the confirmation from GPT-3
+    """
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -50,6 +66,8 @@ def confirm_guess_with_gpt(object_description, guess):
 def generate_question(context):
     """
     Asks GPT-3 to generate the next question or make a guess based on the context of previous Q&A.
+    :param context: the conversation history
+    :return: the generated question or guess
     """
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -66,6 +84,8 @@ def generate_question(context):
 def is_question(input_text):
     """
     Determine if the input text is a question based on common question words and punctuation.
+    :param input_text: the input text to analyze
+    :return: True if the input text is a question, False otherwise
     """
     question_keywords = ['is', 'can', 'do', 'how', 'what', 'where', 'why', 'are', 'does', 'could', 'would', 'should']
     text = input_text.lower().strip()
@@ -79,6 +99,10 @@ def is_question(input_text):
 
 
 def play_game_guess_gpt():
+    """
+    Play the game where the user guesses the object GPT is thinking of.
+    :return: None
+    """
     object_description = ask_gpt_to_think_of_object()
     tries_left = 5
     correct_guess = False
@@ -109,7 +133,12 @@ def play_game_guess_gpt():
     if play_again == 'y':
         play_game()
 
+
 def play_game_guess_user():
+    """
+    Play the game where GPT guesses the object the user is thinking of.
+    :return: None
+    """
     context = ""
     tries_left = 5
     correct_guess = False
@@ -144,7 +173,12 @@ def play_game_guess_user():
     if play_again == 'yes':
         play_game()
 
+
 def play_game():
+    """
+    Main function to start the Cat Game.
+    :return: None
+    """
     print("Welcome Cat Game!")
     print("Choose a mode to play:")
     print("1. Guess the object GPT is thinking of")
@@ -159,4 +193,6 @@ def play_game():
         print("Invalid mode selected. Please try again.")
         play_game()
 
+
+# Start the game
 play_game()
