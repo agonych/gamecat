@@ -1,10 +1,10 @@
 # Decision Tree Guessing Game
 
 ## Overview
-This project implements a simple yet interactive game where a computer program tries to guess objects thought of by the user through a series of yes/no questions. Utilizing a decision tree, the game learns from each interaction, expanding its knowledge base with every new object introduced by the user.
+This project implements a simple yet interactive game where a computer program tries to guess objects thought of by the user through a series of yes/no questions. Base version is utilizing a decision tree to learn from each interaction, expanding its knowledge base with every new object introduced by the user. AI version utilizes GPT API to offer two modes of play: AI trying to guess the object or AI thinking of an object for the user to guess.
 
 ## Features
-- **Iterative Learning**: With each playthrough, the game's decision tree grows, becoming smarter and more capable of guessing a wider range of objects.
+- **Iterative Learning**: With each play through, the game's decision tree grows, becoming smarter and more capable of guessing a wider range of objects.
 - **User Input Variation Handling**: Accepts variations of yes (y, yes, yep) and no (n, no, nope, none) answers to improve user experience.
 - **Simple Text Interface**: Easy-to-navigate textual interface for straightforward play and learning.
 
@@ -23,10 +23,28 @@ To get started, clone this repository to your local machine:
 git clone https://github.com/agonych/gamecat
 ```
 
-Navigate to the project directory and run the game with:
+To run the base version, navigate to the project directory and run the game with:
 
 ```bash
 python cat.py
+```
+
+To run the AI version, you will need to set up an OpenAI API key and install the OpenAI Python library. Once you have your API key, create a `.env` file in the project directory with the following content:
+
+```bash
+GPT_API_KEY=[your_api_key_here]
+```
+
+Then, install the necessary libraries
+
+```bash
+pip install -r requirements.txt
+```
+
+You can now run the AI version of the game with:
+
+```bash
+python catai.py
 ```
 
 ## Contribution
